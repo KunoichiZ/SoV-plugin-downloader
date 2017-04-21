@@ -7,7 +7,7 @@ Allows the user to download the latest version of the Japanese version of Fire E
 Press A to download the latest version of the plugin.
 
 # Coming soon
-* US Shadows of Valentia support (won't be coming until the game either leaks or the game is fully released and when cheat codes are released)
+* US and EU Shadows of Valentia support (won't be coming until the game either leaks or the game is fully released and when cheat codes are released)
 
 # Credits
 * @RyDog199 for the original code
