@@ -22,12 +22,13 @@
 //#define DEBUG
 
 
-static const char  *g_version = "v1.0";
+static const char  *g_version = "v2.0";
 
 enum
 {
-    Latest = 0,
-    Beta3 = 1
+    JP = 0,
+    NA = 1//,
+	//EU = 2
 };
 
 // str_replace(haystack, haystacksize, oldneedle, newneedle) --
@@ -335,17 +336,17 @@ int    CreateFiles(void *buffer, u32 size)
     struct stat st = {0};
 	
     FILE *jap;
-	// FILE *usa;
+	FILE *usa;
 	// FILE *eur;
 
     if (stat("sdmc:/plugin/00040000001A2B00", &st) == -1) 
     {
         mkdir("sdmc:/plugin/00040000001A2B00", 0700);
     }
-	//  if (stat("sdmc:/plugin/<US title ID>", &st) == -1) 
-	// {
-	//	mkdir("sdmc:/plugin/<US title ID>", 0700);
-    //}
+	if (stat("sdmc:/plugin/00040000001B4000", &st) == -1) 
+	{
+		mkdir("sdmc:/plugin/00040000001B4000", 0700);
+    }
 	//  if (stat("sdmc:/plugin/<EU title ID>", &st) == -1) 
 	// {
 	//	mkdir("sdmc:/plugin/<EU title ID>", 0700);
@@ -353,8 +354,11 @@ int    CreateFiles(void *buffer, u32 size)
 
     // Delete any existing plugins
     remove("sdmc:/plugin/00040000001A2B00/00040000001A2B00.plg");
-	//remove("sdmc:/plugin/<US title ID>/<US title ID>.plg");
+	remove("sdmc:/plugin/00040000001A2B00/cheat.plg");
+	remove("sdmc:/plugin/00040000001B4000/00040000001B4000.plg");
+	remove("sdmc:/plugin/00040000001B4000/cheat.plg");
 	//remove("sdmc:/plugin/<EU title ID>/<EU title ID>.plg");
+	//remove("sdmc:/plugin/<EU title ID>/cheat.plg");
 	
     if (!buffer)
         return (-1);
@@ -363,11 +367,11 @@ int    CreateFiles(void *buffer, u32 size)
     fwrite(buffer, 1, size, jap);
     fclose(jap);
 	
-	/*usa = fopen("sdmc:/plugin/<US title ID>/<US title ID>.plg", "w+");
+	usa = fopen("sdmc:/plugin/00040000001B4000/00040000001B4000.plg", "w+");
     fwrite(buffer, 1, size, usa);
-    fclose(usa);*/
+    fclose(usa);
 	
-	/*eur = fopen("sdmc:/plugin/00040000001A2B00/00040000001A2B00.plg", "w+");
+	/*eur = fopen("sdmc:/plugin/<EU title ID>/<EU title ID>.plg", "w+");
     fwrite(buffer, 1, size, eur);
     fclose(eur);*/
 
@@ -379,14 +383,16 @@ int    CreateFiles(void *buffer, u32 size)
 
 int    DownloadPlugin(int version)
 {
-    static const  char *urls[1] = 
+    static const  char *urls[2] = 
     {
-        "https://github.com/KunoichiZ/SoVJP-NTR-Plugin/blob/master/00040000001A2B00.plg?raw=true"
-		// change URLs to 3 and add links to US and EU versions when codes are released
+        "https://github.com/KunoichiZ/SoVJP-NTR-Plugin/blob/master/00040000001A2B00.plg?raw=true",
+		"https://github.com/KunoichiZ/SoVUS-NTR-Plugin/blob/master/00040000001B4000.plg?raw=true"
+		// change URLs to 3 and add EU version when codes are released
     };
-    static const  char *downloadVersion[1] = 
+    static const  char *downloadVersion[2] = 
     {
-        "Updating plugin to the last version...\n\n"
+        "Updating Japanese plugin to the latest version...\n\n",
+		"Updating North American plugin to the latest version...\n\n"
     };
 
     u8      *buffer = NULL;
@@ -515,7 +521,7 @@ int     downloadUpdate(void)
     jsmntok_t       tokens[128];
 
 
-    if (!http_download("https://api.github.com/repos/KunoichiZ/SOVJP-plugin-downloader/releases/latest", (u8 *)&json, &size))
+    if (!http_download("https://api.github.com/repos/KunoichiZ/SoV-plugin-downloader/releases/latest", (u8 *)&json, &size))
     {
         jsmn_init(&jParser);
         r = jsmn_parse(&jParser, json, size, tokens, sizeof(tokens)/sizeof(tokens[0]));
@@ -587,9 +593,9 @@ int main()
 
     consoleInit(GFX_TOP,NULL);
 
-    printf("--- Japanese Fire Emblem Echoes: Shadows of Valentia NTR Plugin Downloader %s ---\n\n", g_version);
-    printf("Press A to download the latest version \n");
-	// printf("Press B to download the latest North American version \n");
+    printf("--- Fire Emblem Echoes: Shadows of Valentia NA & JP NTR Plugin Downloader %s ---\n\n", g_version);
+    printf("Press A to download the latest Japense version \n");
+	printf("Press B to download the latest North American version \n");
 	// printf("Press X to download the latest European version \n");
     // printf("Press Y to check for app updates.\n");
     printf("Press Start to exit.\n\n");
@@ -616,7 +622,15 @@ int main()
 
         if (kDown == KEY_A)
         {
-            if (!DownloadPlugin(Latest))
+            if (!DownloadPlugin(JP))
+            {
+                printf("Returning to homemenu...\n");
+                isRunning = false;
+            }
+        }
+		if (kDown == KEY_B)
+        {
+            if (!DownloadPlugin(NA))
             {
                 printf("Returning to homemenu...\n");
                 isRunning = false;

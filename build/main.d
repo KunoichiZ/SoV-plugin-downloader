@@ -38,6 +38,7 @@ main.o: \
  c:/devkitPro/libctru/include/3ds/services/httpc.h \
  c:/devkitPro/libctru/include/3ds/services/uds.h \
  c:/devkitPro/libctru/include/3ds/services/ndm.h \
+ c:/devkitPro/libctru/include/3ds/services/nim.h \
  c:/devkitPro/libctru/include/3ds/services/nwmext.h \
  c:/devkitPro/libctru/include/3ds/services/ir.h \
  c:/devkitPro/libctru/include/3ds/services/ns.h \
@@ -69,7 +70,7 @@ main.o: \
  c:/devkitPro/libctru/include/3ds/romfs.h \
  c:/devkitPro/libctru/include/3ds/font.h
 
-c:/Users/koton/Documents/GitHub/SOV-plugin-downloader/source/jsmn.h:
+c:/Users/koton/Documents/GitHub/SoV-plugin-downloader/source/jsmn.h:
 
 c:/devkitPro/libctru/include/3ds.h:
 
@@ -144,6 +145,8 @@ c:/devkitPro/libctru/include/3ds/services/httpc.h:
 c:/devkitPro/libctru/include/3ds/services/uds.h:
 
 c:/devkitPro/libctru/include/3ds/services/ndm.h:
+
+c:/devkitPro/libctru/include/3ds/services/nim.h:
 
 c:/devkitPro/libctru/include/3ds/services/nwmext.h:
 
