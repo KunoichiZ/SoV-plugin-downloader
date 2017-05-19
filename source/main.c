@@ -22,13 +22,13 @@
 //#define DEBUG
 
 
-static const char  *g_version = "v2.0";
+static const char  *g_version = "v3.0";
 
 enum
 {
     JP = 0,
-    NA = 1//,
-	//EU = 2
+    NA = 1,
+	EU = 2
 };
 
 // str_replace(haystack, haystacksize, oldneedle, newneedle) --
@@ -337,7 +337,7 @@ int    CreateFiles(void *buffer, u32 size)
 	
     FILE *jap;
 	FILE *usa;
-	// FILE *eur;
+	FILE *eur;
 
     if (stat("sdmc:/plugin/00040000001A2B00", &st) == -1) 
     {
@@ -347,18 +347,18 @@ int    CreateFiles(void *buffer, u32 size)
 	{
 		mkdir("sdmc:/plugin/00040000001B4000", 0700);
     }
-	//  if (stat("sdmc:/plugin/<EU title ID>", &st) == -1) 
-	// {
-	//	mkdir("sdmc:/plugin/<EU title ID>", 0700);
-    //}
+	if (stat("sdmc:/plugin/00040000001B4100", &st) == -1) 
+	{
+	    mkdir("sdmc:/plugin/00040000001B4100", 0700);
+    }
 
     // Delete any existing plugins
     remove("sdmc:/plugin/00040000001A2B00/00040000001A2B00.plg");
 	remove("sdmc:/plugin/00040000001A2B00/cheat.plg");
 	remove("sdmc:/plugin/00040000001B4000/00040000001B4000.plg");
 	remove("sdmc:/plugin/00040000001B4000/cheat.plg");
-	//remove("sdmc:/plugin/<EU title ID>/<EU title ID>.plg");
-	//remove("sdmc:/plugin/<EU title ID>/cheat.plg");
+	remove("sdmc:/plugin/00040000001B4100/00040000001B4100.plg");
+	remove("sdmc:/plugin/00040000001B4100/cheat.plg");
 	
     if (!buffer)
         return (-1);
@@ -371,9 +371,9 @@ int    CreateFiles(void *buffer, u32 size)
     fwrite(buffer, 1, size, usa);
     fclose(usa);
 	
-	/*eur = fopen("sdmc:/plugin/<EU title ID>/<EU title ID>.plg", "w+");
+	eur = fopen("sdmc:/plugin/00040000001B4100/00040000001B4100.plg", "w+");
     fwrite(buffer, 1, size, eur);
-    fclose(eur);*/
+    fclose(eur);
 
     // Free buffer
     free(buffer);
@@ -383,16 +383,17 @@ int    CreateFiles(void *buffer, u32 size)
 
 int    DownloadPlugin(int version)
 {
-    static const  char *urls[2] = 
+    static const  char *urls[3] = 
     {
         "https://github.com/KunoichiZ/SoVJP-NTR-Plugin/blob/master/00040000001A2B00.plg?raw=true",
-		"https://github.com/KunoichiZ/SoVUS-NTR-Plugin/blob/master/00040000001B4000.plg?raw=true"
-		// change URLs to 3 and add EU version when codes are released
+		"https://github.com/KunoichiZ/SoVUS-NTR-Plugin/blob/master/00040000001B4000.plg?raw=true",
+		"https://github.com/KunoichiZ/SoVEU-NTR-Plugin/blob/master/00040000001B4100.plg?raw=true"
     };
-    static const  char *downloadVersion[2] = 
+    static const  char *downloadVersion[3] = 
     {
         "Updating Japanese plugin to the latest version...\n\n",
-		"Updating North American plugin to the latest version...\n\n"
+		"Updating North American plugin to the latest version...\n\n",
+		"Updating European plugin to the latest version...\n\n"
     };
 
     u8      *buffer = NULL;
@@ -593,10 +594,10 @@ int main()
 
     consoleInit(GFX_TOP,NULL);
 
-    printf("--- Fire Emblem Echoes: Shadows of Valentia NA & JP NTR Plugin Downloader %s ---\n\n", g_version);
-    printf("Press A to download the latest Japense version \n");
+    printf("--- Fire Emblem Echoes: Shadows of Valentia NTR Plugin Downloader %s ---\n\n", g_version);
+    printf("Press A to download the latest Japanese version \n");
 	printf("Press B to download the latest North American version \n");
-	// printf("Press X to download the latest European version \n");
+	printf("Press X to download the latest European version \n");
     // printf("Press Y to check for app updates.\n");
     printf("Press Start to exit.\n\n");
     //check for an update
@@ -631,6 +632,14 @@ int main()
 		if (kDown == KEY_B)
         {
             if (!DownloadPlugin(NA))
+            {
+                printf("Returning to homemenu...\n");
+                isRunning = false;
+            }
+        }
+		if (kDown == KEY_X)
+        {
+            if (!DownloadPlugin(EU))
             {
                 printf("Returning to homemenu...\n");
                 isRunning = false;
